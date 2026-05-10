@@ -1,0 +1,28 @@
+{
+  "name": "com.happyrobot33.mdmxtovrsl",
+  "displayName": "MDMX To VRSL",
+  "version": "0.0.1",
+  "description": "A System to convert from MDMX format to VRSL 9 Universe format",
+  "unity" : "2022.3",
+  "bugs" : {
+    "url" : "https://github.com/Happyrobot33/MDMX-To-VRSL/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Happyrobot33/MDMX-To-VRSL"
+  },
+  "dependencies": { },
+  "gitDependencies": {},
+  "vpmDependencies": {
+    "com.vrchat.worlds" : "3.4.1 - 3.10",
+    "com.acchosen.vr-stage-lighting" : "^2.8.4"
+  },
+  "legacyFolders": {
+    "Assets/BinaryToVRSL" : "e7290b0274df8784390acded80d0affc"
+  },
+  "legacyFiles": {},
+  "author": {
+    "name": "Happyrobot33"
+  }
+}
