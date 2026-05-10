@@ -1,4 +1,5 @@
 # WARNING! This is NOT a full DMX SYSTEM! This is a SHIM that converts from the MDMX Format to the VRSL format, thats all it does. It only provides bit accuracy and CRC checking
+VCC Link: https://www.matthewherber.com/MDMX-To-VRSL/
 
 Binary conversion code from the official (unfinished) MDMX repository https://github.com/micksam7/VRC-MDMX
 
