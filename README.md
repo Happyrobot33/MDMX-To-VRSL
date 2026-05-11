@@ -10,4 +10,6 @@ All you need to do to use this in a world is add the prefab from the package int
 
 ### Known issues
 
+If your video player has a built in VRSL integration, such as VideoTXL does, make sure to disable it. in some cases it will work fine, but the video player and this system will be fighting for control over the texture which can lead to weird behaviour
+
 VRSL has a issue where its logic doesnt sample the upper section of some universes properly. This is NOT a issue with this project, it is a issue with VRSL, but you might run into this if you start using alot of channels. Be warned
