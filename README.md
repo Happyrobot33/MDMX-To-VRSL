@@ -6,6 +6,9 @@ Binary conversion code from the official (unfinished) MDMX repository https://gi
 ## Getting started
 
 All you need to do to use this in a world is add the prefab from the package into your scene, and assign the render texture input of your video player to it. You also need to use the VRSL control panel to switch to 9 universe mode. I also recommend enabling fine channel support and using the max movement range as this will take the most advantage of the binary grid
+
+If you are using MIDIDMX, then ensure you switch its mode from normal VRSL mode to 9 Universe mode. Do NOT switch it to MDMX, as thats only for the ACTUAL MDMX system.
+
 <img width="966" height="543" alt="image" src="https://github.com/user-attachments/assets/2cec7e98-6ada-4d63-890f-eaef4b717349" />
 
 ### Known issues
