@@ -5,6 +5,8 @@ Shader "Micca/MDMX Converter"
         _MainTex ("Input Raw", 2D) = "black" {}
         //test int to put 255 at
         _Test ("Test", Float) = 0
+
+        _ThresholdTolerance ("Threshold Tolerance", Range(0,0.5)) = 0.2
     }
 
     SubShader
@@ -51,6 +53,7 @@ Shader "Micca/MDMX Converter"
             float4 _MainTex_ST;
             sampler2D _SelfTexture2D;
             float _Test;
+            float _ThresholdTolerance;
             //float4 _SelfTexture2D_ST;
 
             float _Udon_VRSLToggle;
@@ -188,9 +191,12 @@ Shader "Micca/MDMX Converter"
                         bool bitVal = false;
                         float4 samp = tex2Dlod(_MainTex, float4(uv * scale + offset,0,0));
 
-                        if (samp.r < 0.2 && samp.g < 0.2 && samp.b < 0.2) {
+                        float upper = 1.0 - _ThresholdTolerance;
+                        float lower = _ThresholdTolerance;
+
+                        if (samp.r < lower && samp.g < lower && samp.b < lower) {
                             bitVal = false;
-                        } else if (samp.r > 0.8 && samp.g > 0.8 && samp.b > 0.8) {
+                        } else if (samp.r > upper && samp.g > upper && samp.b > upper) {
                             bitVal = true;
                         } else {
                             bitVal = false;

@@ -1,7 +1,7 @@
 {
   "name": "com.happyrobot33.mdmxtovrsl",
   "displayName": "MDMX To VRSL",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A System to convert from MDMX format to VRSL 9 Universe format",
   "unity" : "2022.3",
   "bugs" : {

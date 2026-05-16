@@ -15,6 +15,8 @@ public class BinaryToVRSLManager : UdonSharpBehaviour
     public RenderTexture VerticalBladeRecreation;
     public RenderTexture VRSLRT;
 
+    public float thresholdTolerance = 0.2f;
+
     const string dmxRawKeyword = "_Udon_MDMXRaw";
 
     void Start()
@@ -24,6 +26,7 @@ public class BinaryToVRSLManager : UdonSharpBehaviour
 
         //set the texture in the MDMX Material
         MDMXMat.SetTexture("_MainTex", VideoTexture);
+        MDMXMat.SetFloat("_ThresholdTolerance", thresholdTolerance);
 
         if (VideoTexture == null)
         {
