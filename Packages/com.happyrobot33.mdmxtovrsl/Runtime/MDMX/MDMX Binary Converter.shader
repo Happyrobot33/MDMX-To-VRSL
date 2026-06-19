@@ -7,6 +7,8 @@ Shader "Micca/MDMX Converter"
         _Test ("Test", Float) = 0
 
         _ThresholdTolerance ("Threshold Tolerance", Range(0,0.5)) = 0.2
+        _Width ("Video Width", Int) = 1920
+        _Height ("Video Height", Int) = 1080
     }
 
     SubShader
@@ -33,10 +35,6 @@ Shader "Micca/MDMX Converter"
             #define BINY 480
             #define CRCBITS 4
 
-            #define MAXVRSLCHANNELS 1536
-            #define SPACINGVRSLX 13
-            #define SPACINGVRSLY 120
-
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -56,7 +54,7 @@ Shader "Micca/MDMX Converter"
             float _ThresholdTolerance;
             //float4 _SelfTexture2D_ST;
 
-            float _Udon_VRSLToggle;
+            float _Width, _Height;
 
             v2f vert (appdata v)
             {
@@ -84,20 +82,6 @@ Shader "Micca/MDMX Converter"
                 t = y * 128;
                 t += x;
 
-                return t;
-            }
-
-            inline float2 coordsFromVRSL(uint channel) {
-                //channel--;
-                uint universe = channel / 512;
-                channel += universe * 8; //VRSL universe spacing
-
-                float2 t = float2(floor(channel % SPACINGVRSLX),floor(channel / SPACINGVRSLX));
-                float2 offsets = float2(1./SPACINGVRSLX,1./SPACINGVRSLY);
-            
-                t *= offsets;
-                t += offsets/2.; //center pixel sample
-            
                 return t;
             }
 
@@ -137,36 +121,21 @@ Shader "Micca/MDMX Converter"
 
                 //for multi grid support
                 const float2 offsetTable[5] = {
-                    float2(0,872./1080.),
-                    float2(0,664./1080.),
-                    float2(0,456./1080.),
-                    float2(0,248./1080.),
-                    float2(0,40./1080.),
+                    float2(0,872./_Height.),
+                    float2(0,664./_Height.),
+                    float2(0,456./_Height.),
+                    float2(0,248./_Height.),
+                    float2(0,40./_Height.),
                 };
                 const float2 scaleTable[5] = {
-                    float2(1.,208./1080.),
-                    float2(1.,208./1080.),
-                    float2(1.,208./1080.),
-                    float2(1.,208./1080.),
-                    float2(1.,208./1080.),
+                    float2(_Width / 1920.,208./_Height.),
+                    float2(_Width / 1920.,208./_Height.),
+                    float2(_Width / 1920.,208./_Height.),
+                    float2(_Width / 1920.,208./_Height.),
+                    float2(_Width / 1920.,208./_Height.),
                 };
 
                 uint channel = getChannel(i.uv);
-
-                //VRSL direct dump
-                //Bypasses binary decode and dump direct VRSL blocks
-                {
-                    if (_Udon_VRSLToggle > 0) {
-                        float2 uv = coordsFromVRSL(channel);
-                        float2 offset = float2(0,872./1080.);
-                        float2 scale = float2(1.,208./1080.);
-                        uv.x = 1. - uv.x;
-                        float4 col = tex2Dlod(_MainTex, float4(uv.yx * scale + offset,0,0));
-                        col.rgb = LinearToGammaSpace(col.rgb);
-                        col.a = 1;
-                        return col;
-                    }
-                }
 
                 uint gridId = (channel / 2880);
                 channel = channel % 2880;
