@@ -26,11 +26,9 @@ Shader "Micca/MDMX Converter"
 
             //#pragma enable_d3d11_debug_symbols
 
-            #define MAXCHANNELS 4096
             #define SPACINGX 128
             #define SPACINGY 128
 
-            #define BINMAX 2880
             #define BINX 6
             #define BINY 480
             #define CRCBITS 4
@@ -45,6 +43,8 @@ Shader "Micca/MDMX Converter"
             {
                 float2 uv : TEXCOORD0;
                 float4 vertex : SV_POSITION;
+                nointerpolation uint4 bin : TEXCOORD1;
+                nointerpolation float4 scaleTable[6] : TEXCOORD2;
             };
 
             sampler2D _MainTex;
@@ -61,18 +61,26 @@ Shader "Micca/MDMX Converter"
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
-                return o;
-            }
 
-            inline float2 coordsFromChannel(uint channel) {
-                channel--;
-                float2 t = float2(floor(channel % SPACINGX),floor(channel / SPACINGX));
-                float2 offsets = float2(1./SPACINGX,1./SPACINGY);
-            
-                t *= offsets;
-                t += offsets/2.; //center pixel sample
-            
-                return t;
+                //sadasdasdasfasdfasdfasdfasdf
+                //figure out how many columns fit
+                //figure out how many rows fit
+                //bake the constants\
+
+                uint binY = floor(_Width/4.);
+                uint grids = floor(_Height/208.);
+
+                float4 scaleTable[6];
+
+                for (int i = 0; i < 6; i++) {
+                    scaleTable[i] = float4(0.,(_Height-(i+1)*208.)/_Height,1,208./_Height);
+                }
+
+                o.scaleTable = scaleTable;
+
+                o.bin = uint4(BINX,binY,grids,binY*6);
+
+                return o;
             }
 
             uint getChannel(float2 coord) {
@@ -114,34 +122,18 @@ Shader "Micca/MDMX Converter"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                const float columnSpace = 1. / BINY;
-                const uint totalBits = BINX * 8 + CRCBITS;
+                const float columnSpace = 1. / i.bin.y;
+                const uint totalBits = i.bin.x * 8 + CRCBITS;
                 const float bitSpace = 1. / (float) totalBits;
                 const uint bitTable[8] = {128,64,32,16,8,4,2,1}; //slightly faster than bitwise ops for this
 
-                //for multi grid support
-                const float2 offsetTable[5] = {
-                    float2(0,872./_Height.),
-                    float2(0,664./_Height.),
-                    float2(0,456./_Height.),
-                    float2(0,248./_Height.),
-                    float2(0,40./_Height.),
-                };
-                const float2 scaleTable[5] = {
-                    float2(_Width / 1920.,208./_Height.),
-                    float2(_Width / 1920.,208./_Height.),
-                    float2(_Width / 1920.,208./_Height.),
-                    float2(_Width / 1920.,208./_Height.),
-                    float2(_Width / 1920.,208./_Height.),
-                };
-
                 uint channel = getChannel(i.uv);
 
-                uint gridId = (channel / 2880);
-                channel = channel % 2880;
+                uint gridId = (channel / i.bin.w);
+                channel = channel % i.bin.w;
 
-                float2 offset = offsetTable[gridId];
-                float2 scale = scaleTable[gridId];
+                float2 offset = i.scaleTable[gridId].xy;
+                float2 scale = i.scaleTable[gridId].zw;
 
                 uint column = (channel / 6);
 
