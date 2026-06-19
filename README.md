@@ -11,6 +11,12 @@ If you are using MIDIDMX, then ensure you switch its mode from normal VRSL mode 
 
 <img width="966" height="543" alt="image" src="https://github.com/user-attachments/assets/2cec7e98-6ada-4d63-890f-eaef4b717349" />
 
+### Non-standard video resolutions
+
+If you are running non standard 1080p video resolutions, or your OBS output is 720p etc instead of 1080p, you will need to change a setting on the manager. There is a field labelled `BaseVideoResolution`. This is the *expected* resolution that the render texture should be interpreted at. If your canvas is 1080p in OBS, but it comes into the world as 720p, then this field should still be set to 1920x1080. This also allows you to use 1440p canvases, and more exotic canvases such as 4000x1080. HNode supports resolutions other than 1080p using the config file.
+
+This also allows support of multi streaming different resolutions. If you stream at 1080p and have a fallback at 720p, you can set the base resolution to 1080p, and if the 1080p stream fails and it falls back to 720p, it will still be interpreted as 1080p by the system.
+
 ### Known issues
 
 If your video player has a built in VRSL integration, such as VideoTXL does, make sure to disable it. in some cases it will work fine, but the video player and this system will be fighting for control over the texture which can lead to weird behaviour
